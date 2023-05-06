@@ -1,13 +1,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const output = fs.createWriteStream('text.txt');
-
 const { stdin, stdout } = process;
 
 
-
-fs.writeFile(
+fs.writeFileSync(
    path.join(__dirname, 'text.txt'),
    '',
    (err) => {
@@ -17,16 +14,13 @@ fs.writeFile(
 );
 
 stdout.write('Введите текст\n');
+const writeStream = fs.createWriteStream(path.join(__dirname, 'text.txt'));
 stdin.on('data', data => {
-   stdout.write('Привет, ');
-   output.appendFile(data);
-   process.exit();
+   if (data.toString() == 'exit\n') {
+      process.exit()
+   }
+   writeStream.write(data)
 });
-process.on('exit', () => stdout.write('Удачи!'));
+process.on('exit', () => stdout.write('\nУдачи!\n'));
+process.on('SIGINT', () => process.exit());
 
-// const input = fs.createReadStream('source.txt', 'utf-8');
-// const output = fs.createWriteStream('text.txt');
-
-// input.on('data', chunk => output.write(chunk));
-// input.on('error', error => console.log('Error', error.message));
-// fs.appendFile()
