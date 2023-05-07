@@ -1,17 +1,6 @@
-
 const fs = require('fs');
 const path = require('path');
 const { stdin, stdout } = process;
-
-
-// fs.writeFileSync(
-//    path.join(__dirname, 'text.txt'),
-//    '',
-//    (err) => {
-//       if (err) throw err;
-//       console.log('Файл был создан');
-//    }
-// );
 
 stdout.write('Введите текст\n');
 const writeStream = fs.createWriteStream(path.join(__dirname, 'text.txt'));
