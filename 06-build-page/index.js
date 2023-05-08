@@ -3,7 +3,7 @@ const path = require('path');
 
 //----script for creating 'project-dist' folder----
 
-fs.mkdir(path.join(__dirname, 'project-dist'), (err) => { 
+fs.mkdir(path.join(__dirname, 'project-dist'), (err) => {
    if (err) {
       // console.error(err);
       return;
@@ -25,7 +25,7 @@ fs.readFile('06-build-page/template.html', 'utf8', (err, data) => {//read templa
          console.error(err);
          return;
       }
-      
+
       for (i = 0; i < files.length; i++) {
          const fileName = path.parse(files[i]).name
          // console.log(fileName);
@@ -50,7 +50,7 @@ fs.readdir('06-build-page/styles', (err, files) => {//read folder to find 'css' 
    if (err) {
       console.error(err);
       return;
-   } 
+   }
    for (i = 0; i < files.length; i++) {
       const fileName = files[i]
       const extName = path.extname(fileName).substring(1);
@@ -73,11 +73,63 @@ fs.readdir('06-build-page/styles', (err, files) => {//read folder to find 'css' 
 
 //----script for copying 'assets' folder into 'project-dist' folder 
 
-fs.cp('06-build-page/assets', '06-build-page/project-dist/assets', { recursive: true }, (err) => {
+//make a assets dir in project-dist folder
+fs.mkdir(path.join('06-build-page/project-dist', 'assets'), (err) => {//make 'files-copy' dir.
    if (err) {
       console.error(err);
       return;
    }
 });
 
+//read origin 'assets' dir. to find it`s staff
+fs.readdir('06-build-page/assets', (err, items) => {
+   if (err) {
+      console.error(err);
+      return;
+   }
+   for (i = 0; i < items.length; i++) {
+      let staff = items[i];
+
+      //script for copying staff from origin 'assets' to 'copy-assets' folder
+      fs.stat('./06-build-page/assets/' + staff, function (err, stats) {
+         if (err) throw err;
+         if (stats.isFile()) {//check if item is a file or a folder 
+            fs.copyFile('06-build-page/assets/' + staff, '06-build-page/project-dist/assets/' + staff, (err) => {
+               if (err) {
+                  console.error(err);
+                  return;
+               }
+            })
+         }
+         else {
+            fs.mkdir(path.join('06-build-page/project-dist/assets', staff), (err) => {//make copy from inner dirs.
+               if (err) {
+                  console.error(err);
+                  return;
+               }
+            })
+         }
+      });
+      //read 'assets' inner folders to copy it`s staff 
+      fs.readdir('06-build-page/assets/' + staff, (err, files) => {
+         if (err) {
+            console.error(err);
+            return;
+         }
+         // console.log(files);
+         for (let i = 0; i < files.length; i++) {
+            let innerStaff = files[i];
+            //copying files from 'assets' inner folders
+            fs.copyFile('06-build-page/assets/' + staff + '/' + innerStaff, '06-build-page/project-dist/assets/' + staff + '/' + innerStaff, (err) => {
+               if (err) {
+                  console.error(err);
+                  return;
+               }
+            })
+         }
+      })
+   }
+});
+
 //------------------------------------------------------------------------------------------------
+
