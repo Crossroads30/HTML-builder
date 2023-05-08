@@ -3,7 +3,9 @@ const path = require('path');
 
 //----script for creating 'project-dist' folder----
 
-fs.mkdir(path.join(__dirname, 'project-dist'), (err) => {
+fs.mkdir(path.join(__dirname, 'project-dist'),{
+   recursive:true,
+}, (err) => {
    if (err) {
       // console.error(err);
       return;
@@ -74,7 +76,9 @@ fs.readdir('06-build-page/styles', (err, files) => {//read folder to find 'css' 
 //----script for copying 'assets' folder into 'project-dist' folder 
 
 //make a assets dir in project-dist folder
-fs.mkdir(path.join('06-build-page/project-dist', 'assets'), (err) => {//make 'files-copy' dir.
+fs.mkdir(path.join('06-build-page/project-dist', 'assets'),{//make 'files-copy' dir.
+   recursive:true,
+}, (err) => {
    if (err) {
       console.error(err);
       return;
@@ -102,7 +106,9 @@ fs.readdir('06-build-page/assets', (err, items) => {
             })
          }
          else {
-            fs.mkdir(path.join('06-build-page/project-dist/assets', staff), (err) => {//make copy from inner dirs.
+            fs.mkdir(path.join('06-build-page/project-dist/assets', staff),{
+               recursive:true,
+            }, (err) => {//make copy from inner dirs.
                if (err) {
                   console.error(err);
                   return;
